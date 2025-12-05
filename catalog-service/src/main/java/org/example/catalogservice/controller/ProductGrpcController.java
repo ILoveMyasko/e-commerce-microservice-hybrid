@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Profile;
 
 @Slf4j
 @GrpcService
-@Profile("grpc") // 2. ВАЖНО: Загружаем этот класс, только если активен профиль 'grpc'
+@Profile("grpc")
 @RequiredArgsConstructor
 public class ProductGrpcController extends CatalogServiceGrpc.CatalogServiceImplBase {
 
