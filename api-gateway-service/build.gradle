@@ -26,6 +26,8 @@ repositories {
 
 dependencies {
     implementation project(':common-proto')
+    // https://mvnrepository.com/artifact/org.springframework.grpc/spring-grpc-spring-boot-starter
+    implementation 'org.springframework.grpc:spring-grpc-spring-boot-starter:1.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-graphql'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-web'

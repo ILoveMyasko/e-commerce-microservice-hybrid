@@ -1,0 +1,13 @@
+type Query {
+    # Запрос агрегированного товара
+    product(id: ID): ProductAggregate
+}
+
+# Этот тип собирается из данных двух микросервисов
+type ProductAggregate {
+    id: ID
+    name: String        # Из Catalog Service
+    description: String # Из Catalog Service
+    price: Float        # Из Catalog Service
+    quantity: Int       # Из Inventory Service
+}
