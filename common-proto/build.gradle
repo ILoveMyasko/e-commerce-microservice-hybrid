@@ -1,22 +1,32 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'com.google.protobuf' version '0.9.4'
 }
-
-group = 'org.example'
-version = '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-    implementation 'io.grpc:grpc-protobuf:1.76.0'
-    implementation 'io.grpc:grpc-stub:1.76.0'
+    api 'io.grpc:grpc-protobuf:1.76.0'
+    api 'io.grpc:grpc-stub:1.76.0'
+    api 'com.google.protobuf:protobuf-java:4.33.0'
+    api 'jakarta.annotation:jakarta.annotation-api:3.0.0'
 }
 
-test {
-    useJUnitPlatform()
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:4.33.0"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.76.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
 }
