@@ -25,15 +25,20 @@ ext {
 
 dependencies{
     implementation project(':common-proto')
+
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-webmvc'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
     implementation 'io.grpc:grpc-services'
     implementation 'org.springframework.grpc:spring-grpc-server-web-spring-boot-starter'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testImplementation 'org.springframework.grpc:spring-grpc-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    runtimeOnly 'com.h2database:h2:2.3.232'
+    compileOnly 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
 }
 
 dependencyManagement {
