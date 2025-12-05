@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+// Это пакет, в который попадет сгенерированный Java код
+option java_multiple_files = true;
+option java_package = "com.example.ecommerce.grpc.catalog";
+option java_outer_classname = "CatalogProto";
+
+package catalog;
+
+// Описание сервиса (методы)
+service CatalogService {
+  // Метод: Принимает ID, отдает ProductResponse
+  rpc GetProduct (ProductRequest) returns (ProductResponse);
+}
+
+// Сообщение-запрос
+message ProductRequest {
+  string id = 1;
+}
+
+// Сообщение-ответ
+message ProductResponse {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  double price = 4;
+}
