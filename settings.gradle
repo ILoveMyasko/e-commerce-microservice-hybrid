@@ -1,0 +1,5 @@
+rootProject.name = 'e-commerce-microservice-hybrid'
+include 'common-proto'
+include 'catalog-service'
+include 'inventory-service'
+include 'api-gateway-service'
