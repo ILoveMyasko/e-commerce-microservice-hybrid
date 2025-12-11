@@ -2,8 +2,10 @@ package org.example.catalogservice.controller;
 
 // Импорты из нашего common-proto
 import com.example.ecommerce.grpc.catalog.CatalogServiceGrpc;
+import com.example.ecommerce.grpc.catalog.ListProductResponse;
 import com.example.ecommerce.grpc.catalog.ProductRequest;
 import com.example.ecommerce.grpc.catalog.ProductResponse;
+import com.google.protobuf.Empty;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,5 +50,27 @@ public class ProductGrpcController extends CatalogServiceGrpc.CatalogServiceImpl
                     );
                 }
         );
+    }
+
+    @Override
+    public void getAllProducts(Empty request, StreamObserver<ListProductResponse> responseObserver) {
+        var products = productService.findAll();
+
+        var protoList = products.stream()
+                .map(p -> ProductResponse.newBuilder()
+                        .setId(p.getId())
+                        .setName(p.getName())
+                        .setDescription(p.getDescription())
+                        .setPrice(p.getPrice())
+                        .addAllPriceHistory(p.getPriceHistory())
+                        .build())
+                .toList();
+
+        ListProductResponse response = ListProductResponse.newBuilder()
+                .addAllProducts(protoList)
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 }

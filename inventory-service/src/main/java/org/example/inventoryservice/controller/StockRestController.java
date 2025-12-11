@@ -6,10 +6,9 @@ import org.example.inventoryservice.entity.ItemStock;
 import org.example.inventoryservice.service.StockService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/stock")
@@ -30,4 +29,15 @@ public class StockRestController {
                     return ResponseEntity.notFound().build();
                 });
     }
+
+    @PostMapping("/batch")
+    public ResponseEntity<List<ItemStock>> getStockBatch(@RequestBody List<String> productIds) {
+        log.info("REST batch request for {} items", productIds.size());
+
+        // Используем стандартный метод JPA
+        List<ItemStock> stocks = stockService.findAllById(productIds);
+
+        return ResponseEntity.ok(stocks);
+    }
+
 }

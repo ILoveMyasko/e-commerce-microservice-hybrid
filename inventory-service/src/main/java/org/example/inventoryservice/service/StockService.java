@@ -4,6 +4,7 @@ import org.example.inventoryservice.entity.ItemStock;
 import org.example.inventoryservice.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -14,5 +15,9 @@ public class StockService {
 
     public Optional<ItemStock> findByProductId(String productId) {
         return repository.findById(productId);
+    }
+
+    public List<ItemStock> findAllById(List<String> ids){
+        return repository.findAllById(ids);
     }
 }

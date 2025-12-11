@@ -1,14 +1,16 @@
 package org.example.inventoryservice.controller;
 
-import com.example.ecommerce.grpc.inventory.InventoryServiceGrpc;
-import com.example.ecommerce.grpc.inventory.StockRequest;
-import com.example.ecommerce.grpc.inventory.StockResponse;
+import com.example.ecommerce.grpc.inventory.*;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.inventoryservice.entity.ItemStock;
 import org.example.inventoryservice.service.StockService;
 import org.springframework.context.annotation.Profile;
 import org.springframework.grpc.server.service.GrpcService;
+
+import java.util.List;
+
 @Slf4j
 @GrpcService
 @Profile("grpc")
@@ -40,6 +42,31 @@ public class StockGrpcController extends InventoryServiceGrpc.InventoryServiceIm
                     responseObserver.onCompleted();
                 }
         );
+    }
+
+    @Override
+    public void getStockBatch(StockBatchRequest request, StreamObserver<StockBatchResponse> responseObserver) {
+        // 1. Достаем список ID из запроса
+         List<String> requestedIds = request.getProductIdsList();
+
+        // 2. Идем в базу одним запросом (SELECT ... WHERE id IN (...))
+        List<ItemStock> stockEntities = stockService.findAllById(requestedIds);
+
+        // 3. Превращаем Entity в Proto
+        List<StockResponse> protoStocks = stockEntities.stream()
+                .map(stock -> StockResponse.newBuilder()
+                        .setProductId(stock.getProductId())
+                        .setQuantity(stock.getQuantity())
+                        .build())
+                .toList();
+
+        // 4. Отправляем ответ
+        StockBatchResponse response = StockBatchResponse.newBuilder()
+                .addAllStocks(protoStocks)
+                .build();
+
+        responseObserver.onNext(response);
+        responseObserver.onCompleted();
     }
 
 }

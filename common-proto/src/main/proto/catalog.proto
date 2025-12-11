@@ -3,22 +3,26 @@ syntax = "proto3";
 option java_multiple_files = true;
 option java_package = "com.example.ecommerce.grpc.catalog";
 option java_outer_classname = "CatalogProto";
-
+import "google/protobuf/empty.proto";
 package catalog;
 
 service CatalogService {
   rpc GetProduct (ProductRequest) returns (ProductResponse);
+  rpc GetAllProducts (google.protobuf.Empty) returns (ListProductResponse);
 }
 
 // Сообщение-запрос
 message ProductRequest {
   string id = 1;
 }
-
+message ListProductResponse {
+  repeated ProductResponse products = 1;
+}
 // Сообщение-ответ
 message ProductResponse {
   string id = 1;
   string name = 2;
   string description = 3;
   double price = 4;
+  repeated int32 price_history = 5;
 }
