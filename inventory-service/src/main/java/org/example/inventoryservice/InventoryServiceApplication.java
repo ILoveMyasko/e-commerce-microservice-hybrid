@@ -7,6 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @SpringBootApplication
 public class InventoryServiceApplication {
 
@@ -17,10 +20,15 @@ public class InventoryServiceApplication {
     @Bean
     CommandLineRunner init(StockRepository repo) {
         return args -> {
-            repo.save(new ItemStock("1", 500));
-            repo.save(new ItemStock("2", 150));
-            repo.save(new ItemStock("3", 0));
-            System.out.println("--- INVENTORY TEST DATA LOADED ---");
+            List<ItemStock> products = new ArrayList<>();
+            for (int i = 1; i <= 1000; i++) {
+                products.add(new ItemStock(
+                        String.valueOf(i),
+                        i
+                ));
+            }
+            repo.saveAll(products);
+            System.out.println("--- GENERATED 1000 PRODUCTS ---");
         };
     }
 }

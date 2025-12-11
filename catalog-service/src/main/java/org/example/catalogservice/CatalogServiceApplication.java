@@ -7,6 +7,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 @SpringBootApplication
 public class CatalogServiceApplication {
 
@@ -16,10 +20,25 @@ public class CatalogServiceApplication {
 
     @Bean
     CommandLineRunner init(ProductRepository repo) {
+        List<Integer> history = new ArrayList<>();
+        Random random = new Random();
+        for (int j = 0; j < 500; j++) {
+            history.add(1000 + random.nextInt(5000));
+        }
+        String heavyDescription = "abcde";
         return args -> {
-            repo.save(new Product("1", "iPhone 15", "Cool phone", 999.99));
-            repo.save(new Product("2", "MacBook Pro", "Cool laptop", 1999.99));
-            System.out.println("--- TEST DATA LOADED ---");
+            List<Product> products = new ArrayList<>();
+            for (int i = 1; i <= 1000; i++) {
+                products.add(new Product(
+                        String.valueOf(i),
+                        "Product " + i,
+                        heavyDescription,
+                        10999.0 + i,
+                        history
+                ));
+            }
+            repo.saveAll(products);
+            System.out.println("--- GENERATED 1000 PRODUCTS ---");
         };
     }
 }
