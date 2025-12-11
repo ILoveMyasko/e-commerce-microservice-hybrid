@@ -1,0 +1,35 @@
+
+services:
+  # 1. Сам сервер Toxiproxy
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:latest
+    ports:
+      - "8474:8474" # API порт (управление)
+      - "9090:9090" # Порт для Catalog Service (вход)
+      - "9092:9092" # Порт для Inventory Service (если захочешь потом)
+    # Этот хак нужен, чтобы из контейнера видеть твой localhost (Java-приложения)
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  # 2. Настройщик (запускается 1 раз, настраивает сеть и умирает)
+  toxiproxy-configurator:
+    image: curlimages/curl
+    depends_on:
+      - toxiproxy
+    # Ждем пока сервер встанет, потом шлем команды
+    command: >
+      /bin/sh -c "
+        echo 'Waiting for Toxiproxy...';
+        sleep 2;
+      
+        echo '1. Creating Proxy for Catalog (Port 9090 -> Host 8081)...';
+        curl -s -X POST -d '{\"name\": \"catalog_proxy\", \"listen\": \"[::]:9090\", \"upstream\": \"host.docker.internal:8081\", \"enabled\": true}' http://toxiproxy:8474/proxies;
+      
+        echo '2. Adding Latency (20ms) to simulate Cloud Region...';
+        curl -s -X POST -d '{\"type\": \"latency\", \"attributes\": {\"latency\": 20}}' http://toxiproxy:8474/proxies/catalog_proxy/toxics;
+      
+        echo '3. Limiting Bandwidth (5 MB/s) to simulate 4G...';
+        curl -s -X POST -d '{\"type\": \"bandwidth\", \"stream\": \"downstream\", \"attributes\": {\"rate\": 200}}' http://toxiproxy:8474/proxies/catalog_proxy/toxics;
+      
+        echo 'Done! Toxiproxy is ready on port 9090.';
+      "
