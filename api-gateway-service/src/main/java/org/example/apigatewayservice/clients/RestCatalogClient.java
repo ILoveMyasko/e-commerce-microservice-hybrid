@@ -5,11 +5,15 @@ import org.example.apigatewayservice.clients.interfaces.CatalogClient;
 import org.example.apigatewayservice.dto.ProductAggregateDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
-@Profile("rest")
+@Profile({"rest", "grpc_inventory"})
 @RequiredArgsConstructor
 public class RestCatalogClient implements CatalogClient {
 
@@ -23,4 +27,17 @@ public class RestCatalogClient implements CatalogClient {
         // Делаем GET запрос, Spring сам мапит JSON в наш DTO (по полям)
         return restTemplate.getForObject(url + "/api/products/" + id, ProductAggregateDto.class);
     }
+
+    @Override
+    public List<ProductAggregateDto> getAllProducts() {
+        // Используем exchange для получения Списка типизированных объектов
+        var response = restTemplate.exchange(
+                url + "/api/products",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<ProductAggregateDto>>() {}
+        );
+        return response.getBody();
+    }
+
 }

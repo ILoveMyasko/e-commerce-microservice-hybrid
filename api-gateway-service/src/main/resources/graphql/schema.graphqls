@@ -1,6 +1,7 @@
 type Query {
     # Запрос агрегированного товара
     product(id: ID): ProductAggregate
+    products: [ProductAggregate]
 }
 
 # Этот тип собирается из данных двух микросервисов
@@ -10,4 +11,5 @@ type ProductAggregate {
     description: String # Из Catalog Service
     price: Float        # Из Catalog Service
     quantity: Int       # Из Inventory Service
+    priceHistory: [Int]
 }

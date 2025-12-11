@@ -34,13 +34,16 @@ public class GrpcClientConfig {
     }
 
     // 2. Создаем бин для Catalog Client
-    @Bean
-    public CatalogServiceGrpc.CatalogServiceBlockingStub catalogStub() {
-        // Создаем канал вручную
-        ManagedChannel channel = ManagedChannelBuilder.forAddress(catalogHost, catalogPort)
-                .usePlaintext() // ВАЖНО: Отключаем SSL (аналог negotiation-type=plaintext)
-                .build();
+//    @Bean
+//    public CatalogServiceGrpc.CatalogServiceBlockingStub catalogStub() {
+//        // Создаем канал вручную
+//        ManagedChannel channel = ManagedChannelBuilder.forAddress(catalogHost, catalogPort)
+//                .usePlaintext() // ВАЖНО: Отключаем SSL (аналог negotiation-type=plaintext)
+//                .maxInboundMessageSize(20 * 1024 * 1024)
+//                .build();
+//
+//        return CatalogServiceGrpc.newBlockingStub(channel)
+//                .withCompression("gzip");
+//    }
 
-        return CatalogServiceGrpc.newBlockingStub(channel);
-    }
 }
